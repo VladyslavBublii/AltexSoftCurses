@@ -9,17 +9,10 @@ namespace Lecture1
         private decimal GetFullPrice(IEnumerable<string> destinations, IEnumerable<string> clients, IEnumerable<int> infantsIds,
             IEnumerable<int> childrenIds, IEnumerable<decimal> prices, IEnumerable<string> currencies)
         {
-            try
-            {
-                if (!IsValide(destinations.Count(), clients.Count(), prices.Count(), currencies.Count())) 
-                    throw new Exception("Invalide input");
-            }
-            catch
-            {
-                return default;
-            }
+            if (!IsValide(destinations.Count(), clients.Count(), prices.Count(), currencies.Count())) 
+                throw new Exception("Invalide input");
 
-            decimal[] deliveryPrices = new decimal[destinations.Count()];
+            var deliveryPrices = new decimal[destinations.Count()];
 
             var pricesBuf       = prices.ToList();
             var destinationsBuf = destinations.Concat(new string[] { null }).ToArray();
@@ -62,7 +55,12 @@ namespace Lecture1
         {
             if (nextStreet == null) 
                 return 1;
-            if (street.Split(' ')[1] == nextStreet.Split(' ')[1]) 
+
+            street = street.Replace(",","");
+            var allWords = street.Split(" ");
+            var concatAdress = String.Join(" ", allWords, 1, 2);
+
+            if (street.Contains(concatAdress)) 
                 return (decimal)0.85;
 
             return 1;
@@ -80,7 +78,7 @@ namespace Lecture1
         decimal ConvertСurrency(string currency, decimal price)
         {
             if (currency == "EUR") 
-                return price*(decimal) 0.84;
+                return price / (decimal)1.19;
 
             return price;
         }
