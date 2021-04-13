@@ -9,25 +9,29 @@ namespace Lecture1
         private decimal GetFullPrice(IEnumerable<string> destinations, IEnumerable<string> clients, IEnumerable<int> infantsIds,
             IEnumerable<int> childrenIds, IEnumerable<decimal> prices, IEnumerable<string> currencies)
         {
-            //decimal fullPrice = default;
-
-            if (!IsValide(destinations.Count(), clients.Count(), prices.Count(), currencies.Count())) throw new Exception("Invalide input");
+            try
+            {
+                if (!IsValide(destinations.Count(), clients.Count(), prices.Count(), currencies.Count())) 
+                    throw new Exception("Invalide input");
+            }
+            catch
+            {
+                return default;
+            }
 
             decimal[] deliveryPrices = new decimal[destinations.Count()];
 
-            var pricesList = prices.ToList();
-
+            var pricesBuf       = prices.ToList();
             var destinationsBuf = destinations.Concat(new string[] { null }).ToArray();
-
-            var currenciesMas = currencies.ToArray();
+            var currenciesBuf   = currencies.ToArray();
 
             int i = 0;
             foreach(var street in destinations)
             {
-                deliveryPrices[i] = ConvertToСurrency(currenciesMas[i], 
-                    NeighborsDiscount(street, destinationsBuf[i + 1]) 
-                    * AgeDiscount(infantsIds, childrenIds, i) 
-                    * (pricesList[i] + StreetDiscount(street))) ;
+                deliveryPrices[i] = ConvertСurrency(currenciesBuf[i], 
+                    GetNeighborsDiscount(street, destinationsBuf[i + 1]) 
+                    * GetAgeDiscount(infantsIds, childrenIds, i) 
+                    * (pricesBuf[i] + GetStreetDiscount(street))) ;
 
                 i++;
             }
@@ -38,34 +42,46 @@ namespace Lecture1
         {
             if (destinationsCount != clientsCount
                 || destinationsCount != pricesCount
-                || destinationsCount != currenciesCount) return false;
+                || destinationsCount != currenciesCount) 
+                return false;
+
             return true;
         }
 
-        decimal StreetDiscount(string street)
+        decimal GetStreetDiscount(string street)
         {
-            if (street.Contains("Wayne Street")) return 10;
-            if (street.Contains("North Heather Street")) return (decimal)-5.36;
+            if (street.Contains("Wayne Street")) 
+                return 10;
+            if (street.Contains("North Heather Street"))
+                return (decimal)-5.36;
+
             return 0;
         }
 
-        decimal NeighborsDiscount(string street, string nextStreet)
+        decimal GetNeighborsDiscount(string street, string nextStreet)
         {
-            if (nextStreet == null) return 1;
+            if (nextStreet == null) 
+                return 1;
+            if (street.Split(' ')[1] == nextStreet.Split(' ')[1]) 
+                return (decimal)0.85;
 
-            if (street.Split(' ')[1] == nextStreet.Split(' ')[1]) return (decimal)0.85;
             return 1;
         }
 
-        decimal AgeDiscount(IEnumerable<int> infantsIds, IEnumerable<int> childrenIds, int i)
+        decimal GetAgeDiscount(IEnumerable<int> infantsIds, IEnumerable<int> childrenIds, int i)
         {
-            if (infantsIds.Where(x => x == i).FirstOrDefault() != default(int)) return (decimal)0.5;
-            if (childrenIds.Where(x => x == i).FirstOrDefault() != default(int)) return (decimal)0.75;
+            if (infantsIds.Where(x => x == i).FirstOrDefault() != default) 
+                return (decimal)0.5;
+            if (childrenIds.Where(x => x == i).FirstOrDefault() != default) 
+                return (decimal)0.75;
+
             return 1;
         }
-        decimal ConvertToСurrency(string currency, decimal price)
+        decimal ConvertСurrency(string currency, decimal price)
         {
-            if (currency == "EUR") return price*(decimal) 0.84;
+            if (currency == "EUR") 
+                return price*(decimal) 0.84;
+
             return price;
         }
 
