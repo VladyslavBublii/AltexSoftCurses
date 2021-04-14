@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Lecture1
 {
@@ -56,11 +57,12 @@ namespace Lecture1
             if (nextStreet == null) 
                 return 1;
 
-            street = street.Replace(",","");
-            var allWords = street.Split(" ");
-            var concatAdress = String.Join(" ", allWords, 1, 2);
+            var index = street.IndexOf(" ")+1;
+            var count = street.IndexOf(",") - index;
 
-            if (street.Contains(concatAdress)) 
+            street = street.Substring(index, count);
+
+            if (street.Contains(street)) 
                 return (decimal)0.85;
 
             return 1;
