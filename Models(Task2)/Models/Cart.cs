@@ -9,6 +9,6 @@ namespace Core.Models
 
         public Guid UserId { get; set; }
 
-        public IEnumerable<Guid> ProductsId { get; set; }
+        public IEnumerable<Guid> ProductsIds { get; set; }
     }
 }
