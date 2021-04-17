@@ -11,7 +11,7 @@ namespace Core.Models
 
         public IEnumerable<Guid> ProductsId { get; set; } 
 
-        public decimal TotalPrice { get; set; }
+        public decimal Price { get; set; }
 
         public DateTime OrderTime { get; set; }
     }
